@@ -1,30 +1,88 @@
-const $=s=>document.querySelector(s), money=n=>'₦'+Number(n||0).toLocaleString('en-NG');
-let data=JSON.parse(localStorage.getItem('aagbiz')||'null')||{products:[],sales:[],expenses:[],customers:[],debts:[]}, page='dashboard',ha=false;
-function save(){localStorage.setItem('aagbiz',JSON.stringify(data))}
-function render(){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.p===page));$('#title').textContent=({dashboard:ha?'Allon Kasuwanci':'Dashboard',products:ha?'Kaya':'Products',sales:ha?'Sayarwa':'Sales',expenses:ha?'Kashe-kashe':'Expenses',customers:ha?'Kwastomomi':'Customers',debts:ha?'Bashi':'Debts',reports:ha?'Rahotanni':'Reports',settings:ha?'Saituna':'Settings'})[page];({dashboard,products,sales,expenses,customers,debts,reports,settings}[page])()}
-function dashboard(){let today=new Date().toDateString(),s=data.sales.filter(x=>new Date(x.date).toDateString()===today),e=data.expenses.filter(x=>new Date(x.date).toDateString()===today),rev=s.reduce((a,x)=>a+x.total,0),pr=s.reduce((a,x)=>a+x.profit,0),ex=e.reduce((a,x)=>a+x.amount,0),sv=data.products.reduce((a,x)=>a+x.cost*x.stock,0);
-$('#content').innerHTML=`<div class=cards><div class=card><div class=label>${ha?'Sayarwar yau':'Sales today'}</div><div class="value blue">${money(rev)}</div></div><div class=card><div class=label>${ha?'Riba':'Profit'}</div><div class="value green">${money(pr)}</div></div><div class=card><div class=label>${ha?'Kashewar yau':'Expenses today'}</div><div class="value red">${money(ex)}</div></div><div class=card><div class=label>${ha?'Darajar kaya':'Stock value'}</div><div class=value>${money(sv)}</div></div></div>
-<div class=grid><div class=panel><h3>${ha?'Sayarwa na baya':'Recent sales'}</h3>${data.sales.length?`<table><tr><th>Product</th><th>Qty</th><th>Total</th><th>Profit</th></tr>${data.sales.slice(-6).reverse().map(x=>`<tr><td>${x.product}</td><td>${x.qty}</td><td>${money(x.total)}</td><td class=green>${money(x.profit)}</td></tr>`).join('')}</table>`:`<div class=empty>${ha?'Babu komai tukuna':'Nothing here yet'}</div>`}</div>
-<div class=panel><h3>Quick actions</h3><div class=actions><button class=btn onclick="add('product')">+ ${ha?'Kaya':'Product'}</button><button class=btn onclick="add('sale')">+ ${ha?'Sayarwa':'Sale'}</button><button class=btn onclick="add('expense')">+ ${ha?'Kashe-kashe':'Expense'}</button><button class=btn onclick="add('customer')">+ ${ha?'Kwastoma':'Customer'}</button></div><br><div class=note>AAG Business V1 is an MVP. Data is stored locally on this device for now.</div></div></div>`}
-function products(){let rows=data.products.map((x,i)=>`<tr><td>${x.name}</td><td>${money(x.cost)}</td><td>${money(x.price)}</td><td>${x.stock}</td><td><button class="btn danger" onclick="del('products',${i})">Delete</button></td></tr>`).join('');$('#content').innerHTML=`<div class=toolbar><h2>${ha?'Kaya':'Products'}</h2><button class=btn onclick="add('product')">+ ${ha?'Ƙara':'Add'}</button></div><div class=panel><table><tr><th>Name</th><th>Cost</th><th>Price</th><th>Stock</th><th></th></tr>${rows||'<tr><td colspan=5 class=empty>No products yet</td></tr>'}</table></div>`}
-function sales(){let rows=data.sales.slice().reverse().map(x=>`<tr><td>${new Date(x.date).toLocaleDateString()}</td><td>${x.product}</td><td>${x.qty}</td><td>${money(x.total)}</td><td class=green>${money(x.profit)}</td></tr>`).join('');$('#content').innerHTML=`<div class=toolbar><h2>${ha?'Sayarwa':'Sales'}</h2><button class=btn onclick="add('sale')">+ ${ha?'Ƙara':'Add'}</button></div><div class=panel><table><tr><th>Date</th><th>Product</th><th>Qty</th><th>Total</th><th>Profit</th></tr>${rows||'<tr><td colspan=5 class=empty>No sales yet</td></tr>'}</table></div>`}
-function expenses(){let rows=data.expenses.slice().reverse().map(x=>`<tr><td>${new Date(x.date).toLocaleDateString()}</td><td>${x.name}</td><td class=red>${money(x.amount)}</td></tr>`).join('');$('#content').innerHTML=`<div class=toolbar><h2>${ha?'Kashe-kashe':'Expenses'}</h2><button class=btn onclick="add('expense')">+ Add</button></div><div class=panel><table><tr><th>Date</th><th>Name</th><th>Amount</th></tr>${rows||'<tr><td colspan=3 class=empty>No expenses yet</td></tr>'}</table></div>`}
-function customers(){let r=data.customers.map(x=>`<tr><td>${x.name}</td><td>${x.phone}</td></tr>`).join('');$('#content').innerHTML=`<div class=toolbar><h2>Customers</h2><button class=btn onclick="add('customer')">+ Add</button></div><div class=panel><table><tr><th>Name</th><th>Phone</th></tr>${r||'<tr><td colspan=2 class=empty>No customers yet</td></tr>'}</table></div>`}
-function debts(){let r=data.debts.map(x=>`<tr><td>${x.name}</td><td class=red>${money(x.amount)}</td><td>${x.status}</td></tr>`).join('');$('#content').innerHTML=`<div class=toolbar><h2>Debts</h2><button class=btn onclick="add('debt')">+ Add</button></div><div class=panel><table><tr><th>Name</th><th>Amount</th><th>Status</th></tr>${r||'<tr><td colspan=3 class=empty>No debts yet</td></tr>'}</table></div>`}
-function reports(){let rev=data.sales.reduce((a,x)=>a+x.total,0),pr=data.sales.reduce((a,x)=>a+x.profit,0),ex=data.expenses.reduce((a,x)=>a+x.amount,0);$('#content').innerHTML=`<div class=cards><div class=card><div class=label>Total sales</div><div class="value blue">${money(rev)}</div></div><div class=card><div class=label>Gross profit</div><div class="value green">${money(pr)}</div></div><div class=card><div class=label>Expenses</div><div class="value red">${money(ex)}</div></div><div class=card><div class=label>Net estimate</div><div class=value>${money(pr-ex)}</div></div></div>`}
-function settings(){$('#content').innerHTML=`<div class=panel><h2>Settings</h2><form onsubmit="event.preventDefault();alert('Saved');"><label>Business name<input value="AAG Business"></label><label>Phone<input placeholder="080..."></label><label>Currency<input value="NGN (₦)" disabled></label><button class=btn>Save settings</button></form></div>`}
-function add(type){let body='',title=type==='product'?'Add Product':type==='sale'?'Record Sale':type==='expense'?'Add Expense':type==='customer'?'Add Customer':'Add Debt';
-if(type==='product')body=`<form onsubmit="event.preventDefault();saveProduct()"><label>Name<input id=pname required></label><div class=two><label>Cost<input id=pcost type=number required></label><label>Price<input id=pprice type=number required></label></div><label>Stock<input id=pstock type=number required></label><button class=btn>Save</button></form>`;
-if(type==='sale')body=`<form onsubmit="event.preventDefault();saveSale()"><label>Product<select id=sprod>${data.products.map((x,i)=>`<option value=${i}>${x.name} — ${money(x.price)} (stock ${x.stock})</option>`).join('')}</select></label><label>Quantity<input id=sqty type=number min=1 required></label><button class=btn>Save</button></form>`;
-if(type==='expense')body=`<form onsubmit="event.preventDefault();saveExpense()"><label>Name<input id=ename required></label><label>Amount<input id=eamount type=number required></label><button class=btn>Save</button></form>`;
-if(type==='customer')body=`<form onsubmit="event.preventDefault();saveCustomer()"><label>Name<input id=cname required></label><label>Phone<input id=cphone></label><button class=btn>Save</button></form>`;
-if(type==='debt')body=`<form onsubmit="event.preventDefault();saveDebt()"><label>Name<input id=dname required></label><label>Amount<input id=damount type=number required></label><button class=btn>Save</button></form>`;
-$('#form').innerHTML=`<h2>${title}</h2>${body}`;$('#modal').classList.remove('hide')}
-function close(){ $('#modal').classList.add('hide') }function saveProduct(){data.products.push({name:$('#pname').value,cost:+$('#pcost').value,price:+$('#pprice').value,stock:+$('#pstock').value});save();close();render()}
-function saveSale(){let p=data.products[+$('#sprod').value],q=+$('#sqty').value;if(!p||q>p.stock)return alert('Not enough stock');p.stock-=q;data.sales.push({date:new Date(),product:p.name,qty:q,total:p.price*q,profit:(p.price-p.cost)*q});save();close();render()}
-function saveExpense(){data.expenses.push({date:new Date(),name:$('#ename').value,amount:+$('#eamount').value});save();close();render()}
-function saveCustomer(){data.customers.push({name:$('#cname').value,phone:$('#cphone').value});save();close();render()}
-function saveDebt(){data.debts.push({name:$('#dname').value,amount:+$('#damount').value,status:'Unpaid'});save();close();render()}
-function del(k,i){data[k].splice(i,1);save();render()}
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{page=b.dataset.p;render();document.querySelector('aside').classList.remove('open')});
-$('#menu').onclick=()=>document.querySelector('aside').classList.toggle('open');$('#close').onclick=close;$('#modal').onclick=e=>e.target.id==='modal'&&close();$('#lang').onclick=()=>{ha=!ha;render()};render();
+const KEY="aag_business_v11_data";
+const empty={products:[],sales:[],expenses:[],customers:[],debts:[]};
+let state=load();
+
+function load(){
+  try{
+    const raw=localStorage.getItem(KEY);
+    return raw ? {...empty,...JSON.parse(raw)} : structuredClone(empty);
+  }catch(e){ return structuredClone(empty); }
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
+function money(v){return new Intl.NumberFormat("en-NG",{style:"currency",currency:"NGN",maximumFractionDigits:0}).format(Number(v)||0);}
+function today(){return new Date().toLocaleDateString("en-NG");}
+
+function render(){
+  $("productRows").innerHTML=state.products.length?state.products.map(x=>`<tr><td>${esc(x.name)}</td><td>${money(x.price)}</td><td>${esc(x.stock)}</td></tr>`).join(""):`<tr><td colspan="3">No products yet.</td></tr>`;
+  $("salesRows").innerHTML=state.sales.length?state.sales.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.item)}</td><td>${money(x.amount)}</td></tr>`).join(""):`<tr><td colspan="3">No sales yet.</td></tr>`;
+  $("expenseRows").innerHTML=state.expenses.length?state.expenses.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.desc)}</td><td>${money(x.amount)}</td></tr>`).join(""):`<tr><td colspan="3">No expenses yet.</td></tr>`;
+  $("customerRows").innerHTML=state.customers.length?state.customers.map(x=>`<tr><td>${esc(x.name)}</td><td>${esc(x.phone)}</td></tr>`).join(""):`<tr><td colspan="2">No customers yet.</td></tr>`;
+  $("debtRows").innerHTML=state.debts.length?state.debts.map(x=>`<tr><td>${esc(x.name)}</td><td>${money(x.amount)}</td></tr>`).join(""):`<tr><td colspan="2">No debts yet.</td></tr>`;
+
+  const sales=state.sales.reduce((t,x)=>t+Number(x.amount||0),0);
+  const exp=state.expenses.reduce((t,x)=>t+Number(x.amount||0),0);
+  const debt=state.debts.reduce((t,x)=>t+Number(x.amount||0),0);
+  $("dashSales").textContent=$("repSales").textContent=money(sales);
+  $("dashExpenses").textContent=$("repExpenses").textContent=money(exp);
+  $("dashProfit").textContent=$("repProfit").textContent=money(sales-exp);
+  $("dashDebt").textContent=$("repDebt").textContent=money(debt);
+}
+
+function openModal(title,fields,onSave){
+  $("modalTitle").textContent=title;
+  $("modalForm").innerHTML=fields.map(f=>`<label for="${f.name}">${f.label}</label><input id="${f.name}" name="${f.name}" type="${f.type||"text"} ${f.min!==undefined?`min="${f.min}"`:""} required>`).join("")+
+    `<button type="submit" class="primary">Save</button>`;
+  $("modal").classList.add("show");
+  $("modal").setAttribute("aria-hidden","false");
+  setTimeout(()=>document.querySelector("#modalForm input")?.focus(),50);
+  $("modalForm").onsubmit=e=>{
+    e.preventDefault();
+    const data=Object.fromEntries(new FormData(e.currentTarget).entries());
+    onSave(data);
+    save();
+    render();
+    closeModal();
+  };
+}
+function closeModal(){$("modal").classList.remove("show");$("modal").setAttribute("aria-hidden","true");}
+$("closeModal").onclick=closeModal;
+$("modal").addEventListener("click",e=>{if(e.target.id==="modal")closeModal();});
+
+document.querySelectorAll(".nav").forEach(btn=>btn.addEventListener("click",()=>{
+  document.querySelectorAll(".nav").forEach(x=>x.classList.remove("active"));
+  document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+  btn.classList.add("active");
+  $(btn.dataset.page).classList.add("active");
+  $("pageTitle").textContent=btn.querySelector("span").textContent;
+}));
+
+$("addProduct").onclick=()=>openModal("Add Product",[
+  {label:"Product name",name:"name"},
+  {label:"Selling price (₦)",name:"price",type:"number",min:0},
+  {label:"Stock quantity",name:"stock",type:"number",min:0}
+],x=>state.products.push(x));
+
+function newSale(){openModal("Record Sale",[
+  {label:"Item",name:"item"},
+  {label:"Amount (₦)",name:"amount",type:"number",min:0}
+],x=>state.sales.push({...x,date:today()}));}
+$("addSale").onclick=newSale;
+$("quickSale").onclick=newSale;
+
+$("addExpense").onclick=()=>openModal("Add Expense",[
+  {label:"Description",name:"desc"},
+  {label:"Amount (₦)",name:"amount",type:"number",min:0}
+],x=>state.expenses.push({...x,date:today()}));
+
+$("addCustomer").onclick=()=>openModal("Add Customer",[
+  {label:"Customer name",name:"name"},
+  {label:"Phone",name:"phone"}
+],x=>state.customers.push(x));
+
+$("addDebt").onclick=()=>openModal("Add Debt",[
+  {label:"Customer name",name:"name"},
+  {label:"Amount (₦)",name:"amount",type:"number",min:0}
+],x=>state.debts.push(x));
+
+render();
