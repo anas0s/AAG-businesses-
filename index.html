@@ -1,90 +1,18 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>AAG Business V1.1</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-<aside class="sidebar">
-  <div class="brand"><div class="mark">A</div><div><b>AAG</b><span>Business</span></div></div>
-  <nav>
-    <button class="nav active" data-page="dashboard">⌂ <span>Dashboard</span></button>
-    <button class="nav" data-page="products">▣ <span>Products</span></button>
-    <button class="nav" data-page="sales">₦ <span>Sales</span></button>
-    <button class="nav" data-page="expenses">↘ <span>Expenses</span></button>
-    <button class="nav" data-page="customers">♙ <span>Customers</span></button>
-    <button class="nav" data-page="debtors">▤ <span>Debtors</span></button>
-    <button class="nav" data-page="reports">▥ <span>Reports</span></button>
-  </nav>
-  <small class="version">V1.1 • Local Save</small>
-</aside>
-
-<main>
-  <header>
-    <div><small class="eyebrow">AAG BUSINESS</small><h1 id="pageTitle">Dashboard</h1></div>
-    <button class="primary" id="quickSale">+ New Sale</button>
-  </header>
-
-  <section id="dashboard" class="page active">
-    <div class="cards">
-      <div class="card"><span>Total Sales</span><strong id="dashSales">₦0</strong></div>
-      <div class="card"><span>Expenses</span><strong id="dashExpenses">₦0</strong></div>
-      <div class="card"><span>Profit</span><strong id="dashProfit">₦0</strong></div>
-      <div class="card"><span>Debtors</span><strong id="dashDebt">₦0</strong></div>
-    </div>
-    <div class="panel">
-      <h2>Welcome to AAG Business</h2>
-      <p>Record your business activities and they will now stay saved on this device.</p>
-      <div class="notice">✓ Local saving is enabled in V1.1. Cloud sync and login will come later.</div>
-    </div>
-  </section>
-
-  <section id="products" class="page">
-    <div class="toolbar"><h2>Products</h2><button class="primary" id="addProduct">+ Add Product</button></div>
-    <div class="panel table-wrap"><table><thead><tr><th>Product</th><th>Price</th><th>Stock</th></tr></thead><tbody id="productRows"></tbody></table></div>
-  </section>
-
-  <section id="sales" class="page">
-    <div class="toolbar"><h2>Sales</h2><button class="primary" id="addSale">+ Record Sale</button></div>
-    <div class="panel table-wrap"><table><thead><tr><th>Date</th><th>Item</th><th>Amount</th></tr></thead><tbody id="salesRows"></tbody></table></div>
-  </section>
-
-  <section id="expenses" class="page">
-    <div class="toolbar"><h2>Expenses</h2><button class="primary" id="addExpense">+ Add Expense</button></div>
-    <div class="panel table-wrap"><table><thead><tr><th>Date</th><th>Description</th><th>Amount</th></tr></thead><tbody id="expenseRows"></tbody></table></div>
-  </section>
-
-  <section id="customers" class="page">
-    <div class="toolbar"><h2>Customers</h2><button class="primary" id="addCustomer">+ Add Customer</button></div>
-    <div class="panel table-wrap"><table><thead><tr><th>Name</th><th>Phone</th></tr></thead><tbody id="customerRows"></tbody></table></div>
-  </section>
-
-  <section id="debtors" class="page">
-    <div class="toolbar"><h2>Debtors</h2><button class="primary" id="addDebt">+ Add Debt</button></div>
-    <div class="panel table-wrap"><table><thead><tr><th>Customer</th><th>Amount</th></tr></thead><tbody id="debtRows"></tbody></table></div>
-  </section>
-
-  <section id="reports" class="page">
-    <div class="panel"><h2>Business Report</h2>
-      <div class="report-grid">
-        <div><span>Sales</span><b id="repSales">₦0</b></div>
-        <div><span>Expenses</span><b id="repExpenses">₦0</b></div>
-        <div><span>Profit</span><b id="repProfit">₦0</b></div>
-        <div><span>Debts</span><b id="repDebt">₦0</b></div>
-      </div>
-    </div>
-  </section>
-</main>
-
-<div class="modal" id="modal" aria-hidden="true">
-  <div class="modal-box">
-    <button class="close" id="closeModal" aria-label="Close">×</button>
-    <h2 id="modalTitle">Add</h2>
-    <form id="modalForm"></form>
-  </div>
-</div>
-<script src="app.js"></script>
-</body>
-</html>
+<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>AAG Business</title><link rel="stylesheet" href="style.css"></head><body>
+<aside><div class="logo">A</div><b>AAG</b><small>Business</small><nav>
+<button data-page="dashboard" class="active">⌂ <span>Dashboard</span></button>
+<button data-page="products">▣ <span>Products</span></button>
+<button data-page="sales">₦ <span>Sales</span></button>
+<button data-page="expenses">↘ <span>Expenses</span></button>
+<button data-page="customers">♙ <span>Customers</span></button>
+<button data-page="debtors">▤ <span>Debtors</span></button>
+<button data-page="reports">▥ <span>Reports</span></button></nav></aside>
+<main><header><div><small>AAG BUSINESS</small><h1 id="title">Dashboard</h1></div><button id="quick" class="primary">+ New Sale</button></header>
+<section id="dashboard" class="page active"><div class="cards"><div>Sales<b id="salesTotal">₦0</b></div><div>Expenses<b id="expenseTotal">₦0</b></div><div>Profit<b id="profitTotal">₦0</b></div><div>Debtors<b id="debtTotal">₦0</b></div></div><div class="panel"><h2>Welcome to AAG Business</h2><p>Your records are saved on this device.</p></div></section>
+<section id="products" class="page"><div class="bar"><h2>Products</h2><button id="addProduct" class="primary">+ Add Product</button></div><div class="panel"><table><thead><tr><th>Product</th><th>Price</th><th>Stock</th></tr></thead><tbody id="productRows"></tbody></table></div></section>
+<section id="sales" class="page"><div class="bar"><h2>Sales</h2><button id="addSale" class="primary">+ Record Sale</button></div><div class="panel"><table><thead><tr><th>Date</th><th>Item</th><th>Amount</th></tr></thead><tbody id="salesRows"></tbody></table></div></section>
+<section id="expenses" class="page"><div class="bar"><h2>Expenses</h2><button id="addExpense" class="primary">+ Add Expense</button></div><div class="panel"><table><thead><tr><th>Date</th><th>Description</th><th>Amount</th></tr></thead><tbody id="expenseRows"></tbody></table></div></section>
+<section id="customers" class="page"><div class="bar"><h2>Customers</h2><button id="addCustomer" class="primary">+ Add Customer</button></div><div class="panel"><table><thead><tr><th>Name</th><th>Phone</th></tr></thead><tbody id="customerRows"></tbody></table></div></section>
+<section id="debtors" class="page"><div class="bar"><h2>Debtors</h2><button id="addDebt" class="primary">+ Add Debt</button></div><div class="panel"><table><thead><tr><th>Customer</th><th>Amount</th></tr></thead><tbody id="debtRows"></tbody></table></div></section>
+<section id="reports" class="page"><div class="panel"><h2>Business Report</h2><div class="cards"><div>Sales<b id="rSales">₦0</b></div><div>Expenses<b id="rExp">₦0</b></div><div>Profit<b id="rProfit">₦0</b></div><div>Debts<b id="rDebt">₦0</b></div></div></div></section></main>
+<div id="modal" class="modal"><div class="box"><button id="close">×</button><h2 id="modalTitle">Add</h2><form id="form"></form></div></div><script src="app.js"></script></body></html>
